@@ -24,8 +24,8 @@ app.post("/send-emails", upload.single("attachment"), async (req, res) => {
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.SENDER_EMAIL,
-        pass: process.env.SENDER_PASSWORD,
+        user: senderEmail, // from req.body
+        pass: senderPassword, // from req.body
       },
     });
 
