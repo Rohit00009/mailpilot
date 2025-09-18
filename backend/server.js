@@ -3,6 +3,8 @@ import nodemailer from "nodemailer";
 import multer from "multer";
 import cors from "cors";
 import fs from "fs";
+import dotenv from "dotenv";
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -22,8 +24,8 @@ app.post("/send-emails", upload.single("attachment"), async (req, res) => {
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: senderEmail,
-        pass: senderPassword,
+        user: process.env.SENDER_EMAIL,
+        pass: process.env.SENDER_PASSWORD,
       },
     });
 
@@ -49,4 +51,5 @@ app.post("/send-emails", upload.single("attachment"), async (req, res) => {
   }
 });
 
-app.listen(5000, () => console.log("Backend running on http://localhost:5000"));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Backend running on port ${PORT}`));
