@@ -26,10 +26,14 @@ function App() {
     if (attachment) data.append("attachment", attachment);
 
     try {
-      const res = await fetch("http://localhost:5000/send-emails", {
-        method: "POST",
-        body: data,
-      });
+      const res = await fetch(
+        "https://mailpilot-65qx.onrender.com/send-emails",
+        {
+          method: "POST",
+          body: data,
+        }
+      );
+
       const result = await res.json();
       setStatus(
         result.success ? "Emails sent successfully!" : "Something went wrong!"
