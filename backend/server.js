@@ -10,7 +10,6 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// File upload middleware
 const upload = multer({ dest: "uploads/" });
 
 app.post("/send-emails", upload.single("attachment"), async (req, res) => {
@@ -24,24 +23,24 @@ app.post("/send-emails", upload.single("attachment"), async (req, res) => {
     let transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: senderEmail, // from req.body
-        pass: senderPassword, // from req.body
+        user: senderEmail,
+        pass: senderPassword,
       },
     });
 
     let toList = recipients.split(",").map((e) => e.trim());
 
-    await transporter.sendMail({
-      from: senderEmail,
-      to: senderEmail,
-      bcc: toList,
-      subject,
-      text: message,
-      attachments: attachment
-        ? [{ filename: attachment.originalname, path: attachment.path }]
-        : [],
-    });
-
+    for (let recipient of toList) {
+      await transporter.sendMail({
+        from: senderEmail,
+        to: recipient,
+        subject,
+        text: message,
+        attachments: attachment
+          ? [{ filename: attachment.originalname, path: attachment.path }]
+          : [],
+      });
+    }
     if (attachment) fs.unlinkSync(attachment.path);
 
     res.json({ success: true, message: "Emails sent successfully!" });
